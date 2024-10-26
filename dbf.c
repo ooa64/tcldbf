@@ -115,10 +115,10 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 			char number[16];
 
 			sprintf (number,"%d",rc);
-			Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (number,strlen(number)));
+			Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (number,-1));
 
 			sprintf (number,"%d",fc);
-			Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (number,strlen(number)));
+			Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (number,-1));
 
 			Tcl_SetObjResult (interp,obj);
 			return (TCL_OK);
@@ -160,9 +160,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 						if (objc > 4) {
 							int field_width = 0;
 							int field_prec  = 0;
-							char *t;
 
-						/*	field_width = (int) strtoul (Tcl_GetString(objv[4]),&t,0); */
 							if (Tcl_GetIntFromObj(interp,objv[4],&field_width) == TCL_ERROR) {
 								Tcl_SetResult (interp,"add: cannot interpret the width of the field",TCL_STATIC);
 								return (TCL_ERROR);
@@ -258,15 +256,15 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 					Tcl_ResetResult (interp);
 					obj = Tcl_NewListObj (0,NULL);
 					t = info[j].name;
-					Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (t,strlen(t)));
+					Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (t,-1));
 					t = type_of (info[j].type);
-					Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (t,strlen(t)));
+					Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (t,-1));
 					t = &info[j].native;
 					Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (t,1));
 					sprintf (number,"%d",info[j].width);
-					Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (number,strlen(number)));
+					Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (number,-1));
 					sprintf (number,"%d",info[j].precision);
-					Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (number,strlen(number)));
+					Tcl_ListObjAppendElement (interp,obj,Tcl_NewStringObj (number,-1));
 					}
 				else {
 					Tcl_ResetResult (interp);
@@ -277,15 +275,15 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 						char *t;
 						sub = Tcl_NewListObj (0,NULL);
 						t = info[j].name;
-						Tcl_ListObjAppendElement (interp,sub,Tcl_NewStringObj (t,strlen(t)));
+						Tcl_ListObjAppendElement (interp,sub,Tcl_NewStringObj (t,-1));
 						t = type_of (info[j].type);
-						Tcl_ListObjAppendElement (interp,sub,Tcl_NewStringObj (t,strlen(t)));
+						Tcl_ListObjAppendElement (interp,sub,Tcl_NewStringObj (t,-1));
 						t = &info[j].native;
 						Tcl_ListObjAppendElement (interp,sub,Tcl_NewStringObj (t,1));
 						sprintf (number,"%d",info[j].width);
-						Tcl_ListObjAppendElement (interp,sub,Tcl_NewStringObj (number,strlen(number)));
+						Tcl_ListObjAppendElement (interp,sub,Tcl_NewStringObj (number,-1));
 						sprintf (number,"%d",info[j].precision);
-						Tcl_ListObjAppendElement (interp,sub,Tcl_NewStringObj (number,strlen(number)));
+						Tcl_ListObjAppendElement (interp,sub,Tcl_NewStringObj (number,-1));
 
 						Tcl_ListObjAppendElement (interp,obj,sub);
 						}
@@ -343,8 +341,6 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 
 		if (strcmp (command,"record") == 0)
 			if (objc > 2) {
-				char *t;
-
 				if (!df) {
 					Tcl_SetResult (interp,"record: cannot find; no dbf has been read",TCL_STATIC);
 					return (TCL_ERROR);
@@ -624,7 +620,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 		/*--------------------------------------------------------------*\
 		 | test (used for understanding command arguments)
 		\*--------------------------------------------------------------*/
-
+#ifdef TEST
 		if (strcmp (command,"test") == 0) {
 			if (objc > 2) {
 				int value_objc = 0;
@@ -672,7 +668,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 				}
 			return (TCL_OK);
 			}
-
+#endif
 		/*--------------------------------------------------------------*\
 		 | forget == close
 		\*--------------------------------------------------------------*/
@@ -698,9 +694,7 @@ int dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_Obj * CON
 	char *output_file;
 	char id [64];
 	char *mode;
-	char *s;
 	char *text_buffer = NULL;
-	int i;
 	DBFHandle df;
 
 	Tcl_ResetResult (interp);
