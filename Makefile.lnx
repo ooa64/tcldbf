@@ -1,11 +1,12 @@
 CC = gcc
-VERSION=1.3
+VERSION= 1.3.1
+NAME= dbf
 DST = /usr/share/tcltk/tcl8.4/dbf
 
 all: libdbf$(VERSION).so
 
 dbf.o: dbf.c dbf.h
-	$(CC) -c -O2 -I/usr/include/tcl8.4 -I. -fPIC dbf.c
+	$(CC) -c -O2 -I/usr/include/tcl8.4 -I. /DPACKAGE_NAME="\"$(NAME)\"" /DPACKAGE_VERSION="\"$(VERSION)\"" -fPIC dbf.c
 
 dbfopen.o: dbfopen.c shapefil.h
 	$(CC) -c -O2 -I. -fPIC dbfopen.c

@@ -1,11 +1,11 @@
 CC = gcc
-
-VERSION = 1.3
+NAME = dbf
+VERSION = 1.3.1
 
 all: dbf$(VERSION).dll
 
 dbf.o: dbf.c dbf.h
-	$(CC) -c -O2 -I. -I/usr/local/include -DUSE_TCL_STUBS dbf.c
+	$(CC) -c -O2 -I. -I/usr/local/include -DUSE_TCL_STUBS /DPACKAGE_NAME="\"$(NAME)\"" /DPACKAGE_VERSION="\"$(VERSION)\"" dbf.c
 
 dbfopen.o: dbfopen.c shapefil.h
 	$(CC) -c -O2 -I. dbfopen.c
