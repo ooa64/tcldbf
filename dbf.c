@@ -724,7 +724,12 @@ int dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_Obj * CON
 
 			if (strcmp (Tcl_GetString(objv[2]),"-open") == 0) {
 				if (objc > 2) {
-					input_file = Tcl_GetString(objv[3]);
+					Tcl_DString s;
+					Tcl_DString e;
+					Tcl_DStringInit(&s);
+					Tcl_DStringInit(&e);
+
+      				input_file = Tcl_UtfToExternalDString(NULL, Tcl_TranslateFileName(interp, Tcl_GetString(objv[3]), &s), -1, &e);
 
 					mode = "rb+";
 					if (objc > 4)
@@ -739,11 +744,15 @@ int dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_Obj * CON
 						Tcl_SetVar (interp,variable_name,id,0);
 						Tcl_CreateObjCommand (interp,id,(Tcl_ObjCmdProc *) process_dbf_cmd,(ClientData)df, (Tcl_CmdDeleteProc *)NULL);
 						Tcl_SetResult (interp,success,TCL_STATIC);
+						Tcl_DStringFree(&e);
+						Tcl_DStringFree(&s);
 						return (TCL_OK);
 						}
 					else {
 						sprintf (message,"Error: could not open input file %s",input_file);
 						Tcl_SetResult (interp,message,TCL_STATIC);
+						Tcl_DStringFree(&e);
+						Tcl_DStringFree(&s);
 						return (TCL_ERROR);
 						}
 					}
@@ -760,7 +769,12 @@ int dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_Obj * CON
 
 			if (strcmp (Tcl_GetString(objv[2]),"-create") == 0) {
 				if (objc > 2) {
-					output_file = Tcl_GetString(objv[3]);
+					Tcl_DString s;
+					Tcl_DString e;
+					Tcl_DStringInit(&s);
+					Tcl_DStringInit(&e);
+
+      				output_file = Tcl_UtfToExternalDString(NULL, Tcl_TranslateFileName(interp, Tcl_GetString(objv[3]), &s), -1, &e);
 
 					/*--------------------------------------------------*\
 					 | Open the input file creating a new command.		|
@@ -778,6 +792,8 @@ int dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_Obj * CON
 					else
 						Tcl_SetResult (interp,failure,TCL_STATIC);
 
+					Tcl_DStringFree(&e);
+					Tcl_DStringFree(&s);
 					return (TCL_OK);
 					}
 				else {
