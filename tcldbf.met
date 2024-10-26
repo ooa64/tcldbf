@@ -1,0 +1,155 @@
+Identification_Information:
+  Citation:
+    Citation_Information:
+      Originator: Schweitzer, Peter N.
+      Publication_Date: 2005
+      Title: TclDBF: A Tcl interface to read dBase files
+      Edition: 1.3
+      Publication_Information:
+        Publication_Place: Reston, VA
+        Publisher: U.S. Geological Survey
+      Online_Linkage: http://geology.usgs.gov/tools/metadata/tcldbf/
+  Description:
+    Abstract:
+      This is an extension of Tcl/Tk that provides the Tcl script writer
+      some ability to read and write dBase files. Its core is a set of C wrappers
+      that read the files using Frank Warmerdam's shapelib and make the
+      results available to Tcl procedures.
+    Purpose:
+      Scripted access to dBase files is helpful for carrying out
+      some data management tasks, especially those involving spatial
+      data stored as shapefiles, which use dBase format for the
+      attributes.
+  Time_Period_of_Content:
+    Time_Period_Information:
+      Single_Date/Time:
+        Calendar_Date: 20110428
+    Currentness_Reference: Availability date
+  Status:
+    Progress: Complete
+    Maintenance_and_Update_Frequency: As needed
+  Keywords:
+    Theme:
+      Theme_Keyword_Thesaurus: none
+      Theme_Keyword: dBase
+      Theme_Keyword: DBF
+      Theme_Keyword: Tcl/Tk
+    Theme:
+      Theme_Keyword_Thesaurus: USGS Thesaurus
+      Theme_Keyword: scientific software
+  Access_Constraints: none
+  Use_Constraints: none
+  Point_of_Contact:
+    Contact_Information:
+      Contact_Person_Primary:
+        Contact_Person: Peter N Schweitzer
+        Contact_Organization: USGS ER GD
+      Contact_Position: Geologist
+      Contact_Address:
+        Address_Type: mailing address
+        Address: 12201 Sunrise Valley Drive
+        City: Reston
+        State_or_Province: VA
+        Postal_Code: 20192-0002
+        Country: USA
+      Contact_Voice_Telephone: 703-648-6533
+      Contact_Facsimile_Telephone: 703-648-6252
+      Contact_Electronic_Mail_Address: pschweitzer@usgs.gov
+  Data_Set_Credit: Based on shapelib by Frank Warmerdam
+  Native_Data_Set_Environment: Linux x86, gcc
+Data_Quality_Information:
+  Lineage:
+    Source_Information:
+      Source_Citation:
+        Citation_Information:
+          Originator: Warmerdam, Frank
+          Publication_Date: 2003
+          Title: Shapefile C Library V1.2
+          Edition: 1.2.10
+          Online_Linkage: http://shapelib.maptools.org/
+      Type_of_Source_Media: digital files
+      Source_Time_Period_of_Content:
+        Time_Period_Information:
+          Single_Date/Time:
+            Calendar_Date: 20030407
+        Source_Currentness_Reference: Date of downloaded version
+      Source_Citation_Abbreviation: shapelib-1.2.10
+      Source_Contribution: C library used to access shapefiles
+    Process_Step:
+      Process_Description:
+        Modified dbf.c to change "metadata" to "dbf" in error message.
+        Modified dbf.h to change "mq" to "dbf" in comment.  No version
+        change as this does not really affect behavior.
+      Process_Date: 20060110
+    Process_Step:
+      Process_Description:
+        Modified dbf.c to include functions for writing dbf files.  The open
+        command now opens with mode rb+ unless you specify also -readonly
+        as part of its command.
+      Process_Date: 20060718
+    Process_Step:
+      Process_Description:
+        Modified dbf.c to use the object interfaces rather than string
+        interfaces.  This should make it easier to avoid problems with
+        special characters in attribute values when inserting records.
+      Process_Date: 20090520
+    Process_Step:
+      Process_Description:
+        Modified dbf.c to correctly write logical data to the output file.
+      Process_Date: 20110428
+Distribution_Information:
+  Distributor:
+    Contact_Information:
+      Contact_Person_Primary:
+        Contact_Person: Peter N Schweitzer
+        Contact_Organization: USGS ER GD
+      Contact_Position: Geologist
+      Contact_Address:
+        Address_Type: mailing address
+        Address: 12201 Sunrise Valley Drive
+        City: Reston
+        State_or_Province: VA
+        Postal_Code: 20192-0002
+        Country: USA
+      Contact_Voice_Telephone: 703-648-6533
+      Contact_Facsimile_Telephone: 703-648-6252
+      Contact_Electronic_Mail_Address: pschweitzer@usgs.gov
+  Distribution_Liability:
+    Scientific software is available in provisional release,
+    does not represent interpretive scientific information
+    resulting from USGS research.  USGS has used this software
+    for its own applications but can make no guarantees regarding
+    its fitness for use in other applications.
+  Standard_Order_Process:
+    Digital_Form:
+      Digital_Transfer_Information:
+        Format_Name: text
+        Format_Information_Content: source and executable code and documentation
+        File_Decompression_Technique: gzip and tar
+        Transfer_Size: 34 kilobytes
+      Digital_Transfer_Option:
+        Online_Option:
+          Computer_Contact_Information:
+            Network_Address:
+              Network_Resource_Name: http://geology.usgs.gov/tools/metadata/tcldbf-1.3.tgz
+    Fees: none
+Metadata_Reference_Information:
+  Metadata_Date: 20110428
+  Metadata_Contact:
+    Contact_Information:
+      Contact_Person_Primary:
+        Contact_Person: Peter N Schweitzer
+        Contact_Organization: USGS ER GD
+      Contact_Position: Geologist
+      Contact_Address:
+        Address_Type: mailing address
+        Address: 12201 Sunrise Valley Drive
+        City: Reston
+        State_or_Province: VA
+        Postal_Code: 20192-0002
+        Country: USA
+      Contact_Voice_Telephone: 703-648-6533
+      Contact_Facsimile_Telephone: 703-648-6252
+      Contact_Electronic_Mail_Address: pschweitzer@usgs.gov
+  Metadata_Standard_Name: Content Standard for Digital Geospatial Metadata
+  Metadata_Standard_Version: FGDC-STD-001-1998

@@ -1,0 +1,30 @@
+.banner {
+	background: url("images/bjohnson_banner.jpg") 178px 0px no-repeat;
+	}
+
+.siteTitle {
+	background-color: #4785B6;
+	color: #ffffff;
+	}
+
+body {
+	font-size: medium;
+	width: 640px;
+	}
+
+dd {
+	margin-bottom: 8px;
+	}
+
+/* Element names */
+var {
+	color: #006600;
+	font-style: normal;
+	font-weight: bold;
+	}
+
+/* stuff people type */
+code {
+	color: #990000;
+	font-family: monospace;
+	}
