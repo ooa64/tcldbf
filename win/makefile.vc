@@ -1,0 +1,14 @@
+PROJECT = dbf
+DOTVERSION = 1.3
+
+!include "rules-ext.vc"
+
+PRJ_OBJS = $(TMP_DIR)\dbf.obj $(TMP_DIR)\dbfopen.obj $(TMP_DIR)\stricmp.obj $(TMP_DIR)\safileio.obj
+PRJ_DEFINES = -D_CRT_SECURE_NO_DEPRECATE
+PRJ_INCLUDES = -I..\
+
+!include "$(_RULESDIR)\targets.vc"
+
+pkgindex: $(OUT_DIR)\pkgIndex.tcl
+$(OUT_DIR)\pkgIndex.tcl:
+	@echo package ifneeded $(PROJECT) $(DOTVERSION) [list load [file join $$dir $(PRJLIBNAME)]] > $(OUT_DIR)\pkgIndex.tcl
