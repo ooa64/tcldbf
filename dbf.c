@@ -569,6 +569,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 									field_type = DBFGetFieldInfo (df,k,field_name,&field_width,NULL);
 									switch (field_type) {
 										case FTString:
+											{
 											Tcl_DString e;
 											Tcl_DStringInit(&e);
 											if (!DBFWriteStringAttribute (df,i,k,Tcl_UtfToExternalDString(enc, value, -1, &e))) {
@@ -576,6 +577,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 												fprintf (stderr,"         value is \"%s\"\n",value);
 												}
 										    Tcl_DStringFree(&e);
+											}
 											break;
 										case FTInteger:
 											if (Tcl_GetIntFromObj(interp,value_objv[j],&integer_value) == TCL_ERROR) {
@@ -628,12 +630,14 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 						field_type = DBFGetFieldInfo (df,k,field_name,&field_width,NULL);
 						switch (field_type) {
 							case FTString:
+								{
 								Tcl_DString e;
 								Tcl_DStringInit(&e);
 								if (!DBFWriteStringAttribute (df,i,k,Tcl_UtfToExternalDString(enc, value, -1, &e))) {
 									fprintf (stderr,"Warning: value truncated when writing to field %s\n",field_name);
 									}
 								Tcl_DStringFree(&e);
+								}
 								break;
 							case FTInteger:
 							case FTDouble:
@@ -709,12 +713,14 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 							field_type = DBFGetFieldInfo (df,k,field_name,NULL,NULL);
 							switch (field_type) {
 								case FTString:
+									{
 									Tcl_DString e;
 									Tcl_DStringInit(&e);
 									if (!DBFWriteStringAttribute (df,i,k,Tcl_UtfToExternalDString(enc, value, -1, &e))) {
 										fprintf (stderr,"Warning: value truncated when writing to field %s\n",field_name);
 										}
 									Tcl_DStringFree(&e);
+									}
 									break;
 								case FTInteger:
 								case FTDouble:

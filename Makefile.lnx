@@ -1,21 +1,24 @@
 CC = gcc
 VERSION= 1.3.1
 NAME= dbf
-DST = /usr/share/tcltk/tcl8.4/dbf
+DST = /usr/share/tcltk/tcl8.6/dbf
 
 all: libdbf$(VERSION).so
 
 dbf.o: dbf.c dbf.h
-	$(CC) -c -O2 -I/usr/include/tcl8.4 -I. /DPACKAGE_NAME="\"$(NAME)\"" /DPACKAGE_VERSION="\"$(VERSION)\"" -fPIC dbf.c
+	$(CC) -c -O2 -I. -DPACKAGE_NAME="\"$(NAME)\"" -DPACKAGE_VERSION="\"$(VERSION)\"" -fPIC dbf.c
 
 dbfopen.o: dbfopen.c shapefil.h
 	$(CC) -c -O2 -I. -fPIC dbfopen.c
 
+safileio.o: safileio.c
+	$(CC) -c -O2 -I. -fPIC safileio.c
+
 stricmp.o: stricmp.c stricmp.h
 	$(CC) -c -O2 -I. -fPIC stricmp.c
 
-libdbf$(VERSION).so: dbf.o dbfopen.o stricmp.o
-	$(CC) -pipe -shared -o libdbf$(VERSION).so dbf.o dbfopen.o stricmp.o -L/usr/lib -ltclstub8.4
+libdbf$(VERSION).so: dbf.o dbfopen.o safileio.o stricmp.o
+	$(CC) -pipe -shared -o libdbf$(VERSION).so dbf.o dbfopen.o safileio.o stricmp.o -L/usr/lib -ltclstub8.6
 
 clean:
 	rm *.o *.so

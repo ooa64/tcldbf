@@ -5,19 +5,19 @@ VERSION = 1.3.1
 all: dbf$(VERSION).dll
 
 dbf.o: dbf.c dbf.h
-	$(CC) -c -O2 -I. -I/usr/local/include -DUSE_TCL_STUBS /DPACKAGE_NAME="\"$(NAME)\"" /DPACKAGE_VERSION="\"$(VERSION)\"" dbf.c
+	$(CC) -c -O2 -I. -I/usr/local/include -DUSE_TCL_STUBS -PACKAGE_NAME="\"$(NAME)\"" -PACKAGE_VERSION="\"$(VERSION)\"" dbf.c
 
 dbfopen.o: dbfopen.c shapefil.h
 	$(CC) -c -O2 -I. dbfopen.c
 
 safileio.o: safileio.c
-		$(CC) -c -O2 safileio.c
+	$(CC) -c -O2 safileio.c
 	
 stricmp.o: stricmp.c stricmp.h
 	$(CC) -c -O2 -I. stricmp.c
 
 dbf$(VERSION).dll: dbf.o dbfopen.o stricmp.o safileio.o
-	$(CC) -shared -o dbf$(VERSION).dll dbf.o dbfopen.o stricmp.o safileio.o -L/usr/local/lib -ltclstub84
+	$(CC) -shared -o dbf$(VERSION).dll dbf.o dbfopen.o stricmp.o safileio.o -L/usr/local/lib -ltclstub86
 	
 clean:
 	rm *.o *.dll
