@@ -2,7 +2,7 @@ CC = gcc
 NAME = dbf
 VERSION = 1.3.1
 
-all: dbf$(VERSION).dll
+all: libdbf$(VERSION).dll
 
 dbf.o: dbf.c dbf.h
 	$(CC) -c -O2 -I. -I/usr/local/include -DUSE_TCL_STUBS -PACKAGE_NAME="\"$(NAME)\"" -PACKAGE_VERSION="\"$(VERSION)\"" dbf.c
@@ -16,7 +16,7 @@ safileio.o: safileio.c
 stricmp.o: stricmp.c stricmp.h
 	$(CC) -c -O2 -I. stricmp.c
 
-dbf$(VERSION).dll: dbf.o dbfopen.o stricmp.o safileio.o
+libdbf$(VERSION).dll: dbf.o dbfopen.o stricmp.o safileio.o
 	$(CC) -shared -o dbf$(VERSION).dll dbf.o dbfopen.o stricmp.o safileio.o -L/usr/local/lib -ltclstub86
 	
 clean:
