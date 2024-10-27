@@ -35,6 +35,9 @@
  | $d update $rowid $field $value										|
  |		replaces the specified values of a single field in the record 	|
  |																		|
+ | $d deleted $rowid [true|false]										|
+ |		returns or sets the deleted flag for the given rowid			|
+ |																		|
  | $d forget															|
  |		closes dbase file												|
  |																		|
@@ -758,9 +761,57 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 				}
 
 		/*--------------------------------------------------------------*\
+		 | deleted <record> [<value>]
+		\*--------------------------------------------------------------*/
+
+		if (strcmp (command,"deleted") == 0)
+			if (objc > 2) {
+				char *rowid = Tcl_GetString(objv[2]);
+				char *t;
+
+				if (!df) {
+					Tcl_SetResult (interp,"update: cannot find dbf; no dbf has been created",TCL_STATIC);
+					return (TCL_ERROR);
+					}
+
+				fc = DBFGetFieldCount (df);
+				rc = DBFGetRecordCount(df);
+
+				i = (int) strtoul (rowid,&t,0);
+				if (t == rowid) {
+					Tcl_SetResult (interp,"update: cannot interpret the number of the record",TCL_STATIC);
+					return (TCL_ERROR);
+					}
+
+				if (i < 0 || i >= rc) {
+					Tcl_SetResult (interp,"update: record number out of range",TCL_STATIC);
+					return (TCL_ERROR);
+					}
+
+				if (objc > 3) {
+					int b;
+					if (Tcl_GetBooleanFromObj(interp,objv[3],&b) != TCL_OK) {
+						fprintf (stderr,"Warning: invalid boolean value\n");
+						return (TCL_ERROR);
+						}
+					if (!DBFMarkRecordDeleted(df,i,b)) {
+						fprintf (stderr,"Warning: failed to change deleted mark\n");
+						return (TCL_ERROR);
+						}
+				}
+				Tcl_SetObjResult(interp,Tcl_NewIntObj(DBFIsRecordDeleted(df,i)));
+				return (TCL_OK);
+				}
+			else {
+				Tcl_SetResult (interp,"deleted expects the number of an existing record",TCL_STATIC);
+				return (TCL_ERROR);
+				}
+#ifdef TEST
+
+		/*--------------------------------------------------------------*\
 		 | test (used for understanding command arguments)
 		\*--------------------------------------------------------------*/
-#ifdef TEST
+
 		if (strcmp (command,"test") == 0) {
 			if (objc > 2) {
 				int value_objc = 0;
