@@ -73,6 +73,7 @@ static char *type_of (DBFFieldType t) {
 	if (t == FTInteger) return ("Integer");
 	if (t == FTDouble ) return ("Double" );
 	if (t == FTLogical) return ("Logical");
+	if (t == FTDate)    return ("Date");
 	if (t == FTInvalid) return ("Invalid");
 	return ("Unknown");
 	}
@@ -84,6 +85,7 @@ static DBFFieldType get_type (char *name) {
 		if (strcmp (name,"Integer") == 0) result = FTInteger;
 		if (strcmp (name,"Double" ) == 0) result = FTDouble;
 		if (strcmp (name,"Logical") == 0) result = FTLogical;
+		if (strcmp (name,"Date") == 0)    result = FTDate;
 		}
 	return (result);
 	}
@@ -176,7 +178,7 @@ static char * codepages[] = {
 	NULL,NULL,NULL
 	};
 
-static char *get_encoding (char * codepage) {
+static char *get_encoding (char *codepage) {
 	int result = 0; 
     if (codepage && strncmp(codepage,"LDID/",5) == 0) {
         result = atoi(codepage + 5);
@@ -185,6 +187,15 @@ static char *get_encoding (char * codepage) {
     };
     return codepages[result];
 };
+
+static SHPDate *get_date (SHPDate *date, char *str) {
+    if (3 != sscanf(str,"%4d%2d%2d",&date->year,&date->month,&date->day)) {
+        date->year = 0;
+        date->month = 0;
+        date->day = 0;
+    }
+    return date;	
+}
 
 static char *empty = "";
 static char *failure = "0";
@@ -333,7 +344,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 							}
 						}
 					else {
-						Tcl_SetResult (interp,"add: type of field must be String, Integer, Logical, or Double",TCL_STATIC);
+						Tcl_SetResult (interp,"add: type of field must be String, Integer, Logical, Date, or Double",TCL_STATIC);
 						return (TCL_ERROR);
 						}
 					}
@@ -560,6 +571,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 								int field_width;
 								int integer_value;
 								double double_value;
+								SHPDate date_value;
 								char *value = Tcl_GetString(value_objv[j]);
 
 								if (strlen(value) == 0) {
@@ -601,6 +613,12 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 												fprintf (stderr,"         value is \"%s\"\n",value);
 												}
 											break;
+										case FTDate:
+											if (!DBFWriteDateAttribute (df,i,k,get_date(&date_value,value))) {
+												fprintf (stderr,"Warning: date value unrecognized for field %s\n",field_name);
+												fprintf (stderr,"         value is \"%s\"\n",value);
+												}
+											break;
 										case FTInvalid:
 										default:
 											fprintf (stderr,"Warning: Field %d is an unwritable field of type %s\n",k,type_of(field_type));
@@ -622,6 +640,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 					int field_width;
 					int integer_value;
 					double double_value;
+					SHPDate date_value;
 
 					if (strlen(value) == 0) {
 						DBFWriteNULLAttribute (df,i,k);
@@ -652,6 +671,12 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 							case FTLogical:
 								if (!DBFWriteLogicalAttribute (df,i,k,*value)) {
 									fprintf (stderr,"Warning: logical value unrecognized for field %s\n",field_name);
+									fprintf (stderr,"         value is \"%s\"\n",value);
+									}
+								break;
+							case FTDate:
+								if (!DBFWriteDateAttribute (df,i,k,get_date(&date_value,value))) {
+									fprintf (stderr,"Warning: date value unrecognized for field %s\n",field_name);
 									fprintf (stderr,"         value is \"%s\"\n",value);
 									}
 								break;
@@ -709,6 +734,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 							char *value = Tcl_GetString(objv[4]);
 							DBFFieldType field_type;
 							double double_value;
+						    SHPDate date_value;
 
 							field_type = DBFGetFieldInfo (df,k,field_name,NULL,NULL);
 							switch (field_type) {
@@ -735,6 +761,12 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 								case FTLogical:
 									if (!DBFWriteLogicalAttribute (df,i,k,*value)) {
 										fprintf (stderr,"Warning: logical value unrecognized for field %s\n",field_name);
+										fprintf (stderr,"         value is \"%s\"\n",value);
+										}
+									break;
+								case FTDate:
+									if (!DBFWriteDateAttribute (df,i,k,get_date(&date_value,value))) {
+										fprintf (stderr,"Warning: date value unrecognized for field %s\n",field_name);
 										fprintf (stderr,"         value is \"%s\"\n",value);
 										}
 									break;
