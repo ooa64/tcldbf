@@ -16,7 +16,7 @@
  | $d codepage															|
  |		returns database codepage										|
  |																		|
- | $d add label type width [prec]										|
+ | $d add label type|nativetype width [prec]										|
  |		adds field specified to the dbf, if created and empty			|
  |																		|
  | $d fields															|
@@ -81,11 +81,20 @@ static char *type_of (DBFFieldType t) {
 static DBFFieldType get_type (char *name) {
 	DBFFieldType result = FTInvalid;
 	if (name && *name) {
-		if (strcmp (name,"String" ) == 0) result = FTString;
-		if (strcmp (name,"Integer") == 0) result = FTInteger;
-		if (strcmp (name,"Double" ) == 0) result = FTDouble;
-		if (strcmp (name,"Logical") == 0) result = FTLogical;
-		if (strcmp (name,"Date") == 0)    result = FTDate;
+		if (name[1] == '\0') {
+			if (name[0] == 'C') result = FTString;
+			if (name[0] == 'I') result = FTInteger;
+			if (name[0] == 'N') result = FTDouble;
+			if (name[0] == 'L') result = FTLogical;
+			if (name[0] == 'D') result = FTDate;
+			}
+		else {
+			if (strcmp (name,"String" ) == 0) result = FTString;
+			if (strcmp (name,"Integer") == 0) result = FTInteger;
+			if (strcmp (name,"Double" ) == 0) result = FTDouble;
+			if (strcmp (name,"Logical") == 0) result = FTLogical;
+			if (strcmp (name,"Date") == 0)    result = FTDate;
+			}
 		}
 	return (result);
 	}

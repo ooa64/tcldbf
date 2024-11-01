@@ -2,24 +2,22 @@
 
 package require dbf
 
-set file_name "test5.dbf"
+set file_name "test8.dbf"
 
-# default codepage "LDID/87" ( 87 - system ANSI, 38/101 - cp866, 201 - cp1251 ) */
-
-if {[dbf d -create $file_name -codepage "LDID/38"]} {
-	$d add NAME String 12
-	$d add VALUE Double 8 5
-	$d add Q Logical 1
-	$d add NUM Integer 4
-	$d insert 0 "Перший нах" 1.23 T 123
-	$d insert 1 "Другий нах" 4.56 F 456
-	$d insert 2 "Третій нах" 7.89 T 789
+if {[dbf d -create $file_name]} {
+	$d add NAME C 12
+	$d add VALUE N 8 5
+	$d add Q L 1
+	$d add NUM I 4
+	$d add D D 8
+	$d insert 0 "First one" 1.23 T 123 20141028
+	$d insert 1 "Second one" 4.56 F 456 ""
+	$d insert 2 "Third one" 7.89 T 789 00000000
 	$d close
 
 	if {[dbf d -open $file_name]} {
 		set nr [lindex [$d info] 0]
 		set nf [lindex [$d info] 1]
-		puts "Code page: [$d codepage]"
 		puts "Number of records: $nr"
 		puts "Number of fields:  $nf"
 		puts "Fields:"
