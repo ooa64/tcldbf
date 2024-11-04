@@ -16,7 +16,7 @@
  | $d codepage															|
  |		returns database codepage										|
  |																		|
- | $d add label type|nativetype width [prec]										|
+ | $d add label type|nativetype width [prec]							|
  |		adds field specified to the dbf, if created and empty			|
  |																		|
  | $d fields															|
@@ -83,7 +83,6 @@ static DBFFieldType get_type (char *name) {
 	if (name && *name) {
 		if (name[1] == '\0') {
 			if (name[0] == 'C') result = FTString;
-			if (name[0] == 'I') result = FTInteger;
 			if (name[0] == 'N') result = FTDouble;
 			if (name[0] == 'L') result = FTLogical;
 			if (name[0] == 'D') result = FTDate;
