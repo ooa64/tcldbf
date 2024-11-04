@@ -602,6 +602,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 										case FTInteger:
 											if (Tcl_GetIntFromObj(interp,value_objv[j],&integer_value) == TCL_ERROR) {
 												Tcl_SetResult (interp,"insert: cannot interpret integer value",TCL_STATIC);
+												Tcl_AppendResult(interp, " for field ", field_name, NULL);
 												return (TCL_ERROR);
 												}
 											if (!DBFWriteIntegerAttribute (df,i,k,integer_value))
@@ -610,6 +611,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 										case FTDouble:
 											if (Tcl_GetDoubleFromObj(interp,value_objv[j],&double_value) == TCL_ERROR) {
 												Tcl_SetResult (interp,"insert: cannot interpret double value",TCL_STATIC);
+												Tcl_AppendResult(interp, " for field ", field_name, NULL);
 												return (TCL_ERROR);
 												}
 											if (!DBFWriteDoubleAttribute (df,i,k,double_value))
@@ -671,6 +673,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 								double_value = (double) strtod (value,&t);
 								if (t == value) {
 									Tcl_SetResult (interp,"insert: cannot interpret double value",TCL_STATIC);
+									Tcl_AppendResult(interp, " info field ", field_name, NULL);
 									return (TCL_ERROR);
 									}
 								if (!DBFWriteDoubleAttribute (df,i,k,double_value))
