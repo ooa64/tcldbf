@@ -932,8 +932,8 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 
 int dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_Obj * CONST objv[]) {
 	char *variable_name;
-	char *input_file;
-	char *output_file;
+	char *input_file = NULL;
+	char *output_file = NULL;
 	char id [64];
 	char *mode;
 	char *text_buffer = NULL;
@@ -943,20 +943,20 @@ int dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_Obj * CON
 
 	if (objc > 1) {
 		variable_name = Tcl_GetString(objv[1]);
-		if (objc > 1) {
+		if (objc > 2) {
 
 			/*----------------------------------------------------------*\
 			 | -open input_file
 			\*----------------------------------------------------------*/
 
 			if (strcmp (Tcl_GetString(objv[2]),"-open") == 0) {
-				if (objc > 2) {
+				if (objc > 3) {
 					Tcl_DString s;
 					Tcl_DString e;
 					Tcl_DStringInit(&s);
 					Tcl_DStringInit(&e);
 
-      				input_file = Tcl_UtfToExternalDString(NULL, Tcl_TranslateFileName(interp, Tcl_GetString(objv[3]), &s), -1, &e);
+					input_file = Tcl_UtfToExternalDString(NULL, Tcl_TranslateFileName(interp, Tcl_GetString(objv[3]), &s), -1, &e);
 
 					mode = "rb+";
 					if (objc > 4)
@@ -998,14 +998,14 @@ int dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_Obj * CON
 			\*----------------------------------------------------------*/
 
 			if (strcmp (Tcl_GetString(objv[2]),"-create") == 0) {
-				if (objc > 2) {
+				if (objc > 3) {
 					char *codepage = "LDID/87"; /* 87 - ANSI, 38 - 866, 201 - 1251 */
 					Tcl_DString s;
 					Tcl_DString e;
 					Tcl_DStringInit(&s);
 					Tcl_DStringInit(&e);
 
-      				output_file = Tcl_UtfToExternalDString(NULL, Tcl_TranslateFileName(interp, Tcl_GetString(objv[3]), &s), -1, &e);
+					output_file = Tcl_UtfToExternalDString(NULL, Tcl_TranslateFileName(interp, Tcl_GetString(objv[3]), &s), -1, &e);
 
 					if (objc > 5 && strcmp(Tcl_GetString(objv[4]),"-codepage") == 0)
 						codepage = Tcl_GetString(objv[5]);
