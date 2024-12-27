@@ -573,7 +573,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 								}
 
 							k = 0;
-							for (j=0; j < value_objc; j++) {
+							for (j=0; j < value_objc && j < fc; j++) {
 								DBFFieldType field_type;
 								char field_name[12];
 								int field_width;
