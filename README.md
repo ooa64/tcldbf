@@ -9,7 +9,13 @@ tcldbf-1.3.1
 	 
 	added codepage 1..255 support (decode/encode chars on read/write)
 	added deleted command (query or set deleted mark)
-	using nativetypes in the add command
+	added option to use nativetypes in the add command
+
+tcldbf-1.3.2
+
+	added Date field
+	added some tests
+	fixed insert for too many values
 
 Commands summary
 
