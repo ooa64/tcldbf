@@ -338,7 +338,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 							if (j >= 0) {
 								char number[16];
 								sprintf (number,"%d",j);
-								Tcl_SetResult (interp,number,TCL_STATIC);
+								Tcl_AppendResult (interp,number,TCL_STATIC);
 								return (TCL_OK);
 								}
 							else {
@@ -561,7 +561,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 
 				/* If the third argument is a list, get the values to be inserted from it */
 
-				if (objv[3]->typePtr)
+				if (objc == 4 && objv[3]->typePtr)
 					if (objv[3]->typePtr->name)
 						if (strcmp(objv[3]->typePtr->name,"list") == 0) {
 							int value_objc;
@@ -643,7 +643,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 							}
 
 				k = 0;
-				for (j=3; j < objc; j++) {
+				for (j=3; j < objc && j < fc + 3; j++) {
 					char *value = Tcl_GetString(objv[j]);
 					DBFFieldType field_type;
 					char field_name[12];

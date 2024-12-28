@@ -1,5 +1,5 @@
 CC = gcc
-VERSION= 1.3.1
+VERSION= 1.3.2
 NAME= dbf
 DST = /usr/share/tcltk/tcl8.6/dbf
 
@@ -23,15 +23,21 @@ libdbf$(VERSION).so: dbf.o dbfopen.o safileio.o stricmp.o
 clean:
 	rm *.o *.so
 
-install:
+test: all
+	TCLLIBPATH=. tclsh dbf.test $(TESTFLAGS)
+
+gdb-test: all
+	TCLLIBPATH=. gdb --args tclsh dbf.test $(TESTFLAGS)
+
+install: all
 	-mkdir $(DST)
 	cp *.so $(DST)
 	cp pkgIndex.tcl $(DST)
 
-update:
+update: all
 	-rm $(DST)/libdbf*.so
 	cp *.so $(DST)
 	cp pkgIndex.tcl $(DST)
 
-archive:
+archive: all
 	cd ..; tar czf $(HOME)/tcldbf-$(VERSION).tgz tcldbf-$(VERSION)

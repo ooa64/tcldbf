@@ -199,7 +199,7 @@ test dbf-4.0.1 {create/setup/open ro/insert} -setup {
    list [$d insert end {foo}] [$d info]
 } -result {0 {1 1}}
 
-test dbf-4.0.2 {create/setup/open ro/insert} -setup {
+test dbf-4.0.2 {create/setup/open ro/insert too many fields} -setup {
    dbf_create [file join [temporaryDirectory] test.dbf] {{S - C 10 0}}
    dbf d -open [file join [temporaryDirectory] test.dbf]
 } -cleanup {
