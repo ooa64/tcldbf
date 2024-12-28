@@ -1,0 +1,55 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+*.exp
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Debug
+*.pdb
+
+# Windows build directories
+win/Debug_*
+win/Release_*
+
+# Database
+*.dbf
+*.dbt
+*.ndx
+*.ntx
+
+# configure
+autom4te.cache
+config.status
+config.log
+Makefile
+pkgIndex.tcl
+
+tmp	 
