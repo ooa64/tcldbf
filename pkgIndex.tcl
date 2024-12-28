@@ -8,4 +8,4 @@
 # script is sourced, the variable $dir must contain the
 # full path name of this file's directory.
 
-package ifneeded dbf 1.3.1 [list load [file join $dir libdbf1.3.1[info shared]]]
+package ifneeded dbf 1.3.2 [list load [file join $dir libdbf1.3.2[info shared]]]

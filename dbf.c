@@ -16,7 +16,7 @@
  | $d codepage															|
  |		returns database codepage										|
  |																		|
- | $d add label type|nativetype width [prec]										|
+ | $d add label type|nativetype width [prec]							|
  |		adds field specified to the dbf, if created and empty			|
  |																		|
  | $d fields															|
@@ -83,7 +83,6 @@ static DBFFieldType get_type (char *name) {
 	if (name && *name) {
 		if (name[1] == '\0') {
 			if (name[0] == 'C') result = FTString;
-			if (name[0] == 'I') result = FTInteger;
 			if (name[0] == 'N') result = FTDouble;
 			if (name[0] == 'L') result = FTLogical;
 			if (name[0] == 'D') result = FTDate;
@@ -574,7 +573,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 								}
 
 							k = 0;
-							for (j=0; j < value_objc; j++) {
+							for (j=0; j < value_objc && j < fc; j++) {
 								DBFFieldType field_type;
 								char field_name[12];
 								int field_width;
@@ -603,6 +602,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 										case FTInteger:
 											if (Tcl_GetIntFromObj(interp,value_objv[j],&integer_value) == TCL_ERROR) {
 												Tcl_SetResult (interp,"insert: cannot interpret integer value",TCL_STATIC);
+												Tcl_AppendResult(interp, " for field ", field_name, NULL);
 												return (TCL_ERROR);
 												}
 											if (!DBFWriteIntegerAttribute (df,i,k,integer_value))
@@ -611,6 +611,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 										case FTDouble:
 											if (Tcl_GetDoubleFromObj(interp,value_objv[j],&double_value) == TCL_ERROR) {
 												Tcl_SetResult (interp,"insert: cannot interpret double value",TCL_STATIC);
+												Tcl_AppendResult(interp, " for field ", field_name, NULL);
 												return (TCL_ERROR);
 												}
 											if (!DBFWriteDoubleAttribute (df,i,k,double_value))
@@ -672,6 +673,7 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 								double_value = (double) strtod (value,&t);
 								if (t == value) {
 									Tcl_SetResult (interp,"insert: cannot interpret double value",TCL_STATIC);
+									Tcl_AppendResult(interp, " info field ", field_name, NULL);
 									return (TCL_ERROR);
 									}
 								if (!DBFWriteDoubleAttribute (df,i,k,double_value))
@@ -930,8 +932,8 @@ int process_dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_O
 
 int dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_Obj * CONST objv[]) {
 	char *variable_name;
-	char *input_file;
-	char *output_file;
+	char *input_file = NULL;
+	char *output_file = NULL;
 	char id [64];
 	char *mode;
 	char *text_buffer = NULL;
@@ -941,20 +943,20 @@ int dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_Obj * CON
 
 	if (objc > 1) {
 		variable_name = Tcl_GetString(objv[1]);
-		if (objc > 1) {
+		if (objc > 2) {
 
 			/*----------------------------------------------------------*\
 			 | -open input_file
 			\*----------------------------------------------------------*/
 
 			if (strcmp (Tcl_GetString(objv[2]),"-open") == 0) {
-				if (objc > 2) {
+				if (objc > 3) {
 					Tcl_DString s;
 					Tcl_DString e;
 					Tcl_DStringInit(&s);
 					Tcl_DStringInit(&e);
 
-      				input_file = Tcl_UtfToExternalDString(NULL, Tcl_TranslateFileName(interp, Tcl_GetString(objv[3]), &s), -1, &e);
+					input_file = Tcl_UtfToExternalDString(NULL, Tcl_TranslateFileName(interp, Tcl_GetString(objv[3]), &s), -1, &e);
 
 					mode = "rb+";
 					if (objc > 4)
@@ -996,14 +998,14 @@ int dbf_cmd (ClientData clientData, Tcl_Interp *interp, int objc,  Tcl_Obj * CON
 			\*----------------------------------------------------------*/
 
 			if (strcmp (Tcl_GetString(objv[2]),"-create") == 0) {
-				if (objc > 2) {
+				if (objc > 3) {
 					char *codepage = "LDID/87"; /* 87 - ANSI, 38 - 866, 201 - 1251 */
 					Tcl_DString s;
 					Tcl_DString e;
 					Tcl_DStringInit(&s);
 					Tcl_DStringInit(&e);
 
-      				output_file = Tcl_UtfToExternalDString(NULL, Tcl_TranslateFileName(interp, Tcl_GetString(objv[3]), &s), -1, &e);
+					output_file = Tcl_UtfToExternalDString(NULL, Tcl_TranslateFileName(interp, Tcl_GetString(objv[3]), &s), -1, &e);
 
 					if (objc > 5 && strcmp(Tcl_GetString(objv[4]),"-codepage") == 0)
 						codepage = Tcl_GetString(objv[5]);

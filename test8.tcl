@@ -8,7 +8,7 @@ if {[dbf d -create $file_name]} {
 	$d add NAME C 12
 	$d add VALUE N 8 5
 	$d add Q L 1
-	$d add NUM I 4
+	$d add NUM N 4
 	$d add D D 8
 	$d insert 0 "First one" 1.23 T 123 20141028
 	$d insert 1 "Second one" 4.56 F 456 ""

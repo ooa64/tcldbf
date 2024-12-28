@@ -1,5 +1,5 @@
 PROJECT = dbf
-DOTVERSION = 1.3.1
+DOTVERSION = 1.3.2
 
 !include "rules-ext.vc"
 

@@ -1,0 +1,212 @@
+package require dbf
+package require tcltest
+namespace import ::tcltest::*
+
+###
+
+set simple_struct {
+   {F1 Logical L 1 0}
+   {F2 Date D 8 0}
+   {F3 String C 10 0}
+   {F4 Double N 10 0}
+   {F5 Double N 10 2}
+}
+
+proc dbf_create {filename struct args} {
+   if {![dbf d -create $filename {*}$args]} {
+       error "create $filename failed"
+   }
+   foreach l $struct {
+       lassign $l l - t w p
+       $d add $l $t $w $p
+   }
+   $d forget
+}
+
+proc dbf_create_open {filename struct args} {
+   dbf_create $filename $struct {*}$args
+   if {![dbf d -open $filename]} {
+       error "open $filename failed"
+   }
+   set d
+}
+
+proc dbf_insert {dbf data} {
+}
+
+###
+
+test dbf-1.0.0 {usage} -returnCodes 1 -body {
+   dbf
+} -result {dbf expects variable name}
+
+test dbf-1.0.1 {usage} -returnCodes 1 -body {
+   dbf d
+} -result {Error: got variable name d, no -open or -create}
+
+test dbf-1.0.2 {usage} -returnCodes 1 -body {
+   dbf d -create
+} -result {Error: no input file name given}
+
+test dbf-1.0.3 {usage} -returnCodes 1 -body {
+   dbf d -open
+} -result {Error: no input file name given}
+
+test dbf-2.0.0 {create} -cleanup {
+   catch {rename $d ""; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   dbf d -create [file join [temporaryDirectory] test.dbf]]
+} -result 1
+
+test dbf-2.0.1 {create/command} -cleanup {
+   catch {rename $d ""; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   dbf d -create [file join [temporaryDirectory] test.dbf]
+   info commands $d
+} -result {dbf.????} -match glob
+
+test dbf-2.0.2 {create/forget} -cleanup {
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   dbf d -create [file join [temporaryDirectory] test.dbf]
+   $d forget
+   info commands $d
+} -result {}
+
+test dbf-3.0.1 {create/open} -setup {
+   dbf d -create [file join [temporaryDirectory] test.dbf]
+   $d forget; unset d
+} -cleanup {
+   catch {$d forget; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   dbf d -open [file join [temporaryDirectory] test.dbf]
+} -result 1
+
+test dbf-3.0.2 {create/open/command} -setup {
+   dbf d -create [file join [temporaryDirectory] test.dbf]
+   $d forget; unset d
+} -cleanup {
+   catch {$d forget; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   dbf d -open [file join [temporaryDirectory] test.dbf]
+   info commands $d
+} -result {dbf.????} -match glob
+
+test dbf-3.0.3 {create/open/forget} -setup {
+   dbf d -create [file join [temporaryDirectory] test.dbf]
+   $d forget; unset d
+} -cleanup {
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   dbf d -open [file join [temporaryDirectory] test.dbf]
+   $d forget
+   info commands $d
+} -result {}
+
+test dbf-3.1.0 {create/open/codepage default} -setup {
+   dbf d -create [file join [temporaryDirectory] test.dbf]
+   $d forget; unset d
+   dbf d -open [file join [temporaryDirectory] test.dbf]
+} -cleanup {
+   catch {$d forget; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   $d codepage
+} -result {LDID/87}
+
+test dbf-3.1.1 {create/open/codepage custom} -setup {
+   dbf d -create [file join [temporaryDirectory] test.dbf] -codepage "LDID/201"
+   $d forget; unset d
+   dbf d -open [file join [temporaryDirectory] test.dbf]
+} -cleanup {
+   catch {$d forget; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   $d codepage
+} -result {LDID/201}
+
+test dbf-3.2.0 {create/setup} -setup {
+   dbf d -create [file join [temporaryDirectory] test.dbf]
+} -cleanup {
+   catch {$d forget; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   list \
+         [$d add F1 L 1] \
+         [$d add F2 D 8] \
+         [$d add F3 C 10] \
+         [$d add F4 N 10] \
+         [$d add F5 N 10 2]
+} -result {0 1 2 3 4}
+
+test dbf-3.2.1 {create/setup/open/field} -setup {
+   dbf_create [file join [temporaryDirectory] test.dbf] $simple_struct
+   dbf d -open [file join [temporaryDirectory] test.dbf]
+} -cleanup {
+   unset -nocomplain f l
+   catch {$d forget; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   set l {}
+   foreach f $simple_struct {
+       lappend l [$d fields [lindex $f 0]]
+   }
+   set l
+} -result [lrange $simple_struct 0 end]
+
+test dbf-3.2.2 {create/setup/open/fields} -setup {
+   dbf_create [file join [temporaryDirectory] test.dbf] $simple_struct
+   dbf d -open [file join [temporaryDirectory] test.dbf]
+} -cleanup {
+   catch {$d forget; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   $d fields
+} -result [lrange $simple_struct 0 end]
+
+test dbf-3.2.3 {create/setup/open/info} -setup {
+   dbf_create [file join [temporaryDirectory] test.dbf] $simple_struct
+   dbf d -open [file join [temporaryDirectory] test.dbf]
+} -cleanup {
+   catch {$d forget; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   $d info
+} -result [list 0 [llength $simple_struct]]
+
+# NOTE: unexpected result
+test dbf-4.0.0 {create/setup/open ro/insert} -setup {
+   dbf_create [file join [temporaryDirectory] test.dbf] {{S - C 10 0}}
+   dbf d -open [file join [temporaryDirectory] test.dbf] -readonly
+} -cleanup {
+   catch {$d forget; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   list [$d insert end {foo}] [$d info]
+} -result {0 {1 1}}
+
+test dbf-4.0.1 {create/setup/open ro/insert} -setup {
+   dbf_create [file join [temporaryDirectory] test.dbf] {{S - C 10 0}}
+   dbf d -open [file join [temporaryDirectory] test.dbf]
+} -cleanup {
+   catch {$d forget; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   list [$d insert end {foo}] [$d info]
+} -result {0 {1 1}}
+
+test dbf-4.0.2 {create/setup/open ro/insert} -setup {
+   dbf_create [file join [temporaryDirectory] test.dbf] {{S - C 10 0}}
+   dbf d -open [file join [temporaryDirectory] test.dbf]
+} -cleanup {
+   catch {$d forget; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   list [$d insert end {foo} {}] [$d info]
+} -result {0 {1 1}}
+
+cleanupTests
