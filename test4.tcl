@@ -2,16 +2,16 @@
 
 package require dbf
 
-set file_name "тест4.dbf"
+set file_name "С‚РµСЃС‚4.dbf"
 
 if {[dbf d -create $file_name]} {
 	$d add NAME String 12
 	$d add VALUE Double 8 5
 	$d add Q Logical 1
 	$d add NUM Integer 4
-	$d insert 0 "Перший нах" 1.23 T 123
-	$d insert 1 "Другий нах" 4.56 F 456
-	$d insert 2 "Третій нах" 7.89 T 789
+	$d insert 0 "РџРµСЂС€РёР№ РЅР°С…" 1.23 T 123
+	$d insert 1 "Р”СЂСѓРіРёР№ РЅР°С…" 4.56 F 456
+	$d insert 2 "РўСЂРµС‚С–Р№ РЅР°С…" 7.89 T 789
 	$d close
 
 	if {[dbf d -open $file_name]} {

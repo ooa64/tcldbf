@@ -209,4 +209,16 @@ test dbf-4.0.2 {create/setup/open ro/insert too many fields} -setup {
    list [$d insert end {foo} {}] [$d info]
 } -result {0 {1 1}}
 
+test dbf-4.4.0 {values} -setup {
+   dbf_create [file join [temporaryDirectory] test.dbf] {{S - C 10 0}}
+   dbf d -open [file join [temporaryDirectory] test.dbf]
+   $d insert end {foo}
+   $d insert end {bar}
+} -cleanup {
+   catch {$d forget; unset d}
+   catch {file delete [file join [temporaryDirectory] test.dbf]}
+} -body {
+   $d values S
+} -result {foo bar}
+
 cleanupTests
